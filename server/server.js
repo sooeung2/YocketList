@@ -16,6 +16,7 @@ const UserController = require('./controllers/UserController');
 const AuthenticationController = require('./controllers/AuthenticationController');
 const GuestController = require('./controllers/GuestController');
 const EventController = require('./controllers/EventController');
+const HistoryController = require('./controllers/HistoryController');
 const creds = require('../app.config');
 const session = require('express-session');
 const cookieParser = require('cookie-parser')
@@ -27,6 +28,14 @@ mongoose.connect('mongodb://localhost/yockette', () => {
 app.use( express.static(path.join(__dirname, 'dist')));
 app.use( session({ path: '*', secret: 'YukeBox', httpOnly: true, secure: false, maxAge: null }));
 app.use( cookieParser() );
+app.use(bodyparser.json());
+// CORS headers
+app.use((req,res,next) =>{
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+	next();
+});
 
 passport.use(new GoogleStrategy({
     clientID:     creds.GOOGLE_CLIENT_ID,
@@ -47,7 +56,7 @@ passport.use(new GoogleStrategy({
             google_id: profile.id,
             username: profile.name.givenName,
             favlist: []
-          })
+        })
           user.save();
         }
         if (user) {
@@ -105,14 +114,6 @@ app.get('/logout', function(req, res){
 const qArray = [];
 
 /* Express Middleware */
-app.use(bodyparser.json());
-// CORS headers
-app.use((req,res,next) =>{
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-  next();
-});
 
 
 //keep this method --soo
@@ -129,11 +130,17 @@ app.get('/queue', (req, res) => {
 })
 
 //getting guestlist to render on event(room) page
-app.get('/guestlist' (req, res) => {
+app.get('/guestlist', (req, res) => {
   res.status(200).send(Testdata.guestlist)
 })
 
 //adding new data to queue, adds to the end of the list
+
+app.post('/queue', (req, res) => {
+  // Testdata.queue.push(req.body);
+  io.emit('newdata', {songs: req.body, history: HistoryController.list, guests: GuestController.list});
+});
+
 app.post('/addqueue', (req, res) => {
   Testdata.queue.push(req.body);
   io.emit('newQueue', Testdata.queue);
@@ -202,4 +209,4 @@ http.listen(3000, () => {
  *  - when a player window deletes an item from the database
  */
 
-module.export = app;
+module.exports = app;
