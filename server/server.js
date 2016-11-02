@@ -44,27 +44,34 @@ passport.use(new GoogleStrategy({
     passReqToCallback   : true
   },
   function(req, accessToken, refreshToken, profile, done) {
-		console.log('hi');
     process.nextTick(function () {
-
-      User.findOneAndUpdate({ google_id: profile.id, username: profile.name.givenName }, { expire: new Date() }, { upsert: true }, function (err, user) {
-        if (err) {
-          console.log(err);
-          done();
-        }
-        if (!user) {
-          user = new User({
-            google_id: profile.id,
-            username: profile.name.givenName,
-            favlist: []
-        })
-          user.save();
-        }
-        if (user) {
-          return done(null, user);
-        }
+			const query = {google_id: profile.id};
+			const update = {google_id: profile.id, username: profile.name.givenName};
+			const options = {new: true, upsert: true};
+			console.log('hi');
+      User.findOneAndUpdate(query, update, options).then(user => {
+				console.log('Got it!');
+				done(null, user);
+			}).catch (err => {
+				console.log('Error in adding User: ', err);
+				done(err);
+			});
+			// if (err) {
+      //     console.log(err);
+      //     done();
+      //   }
+      //   if (!user) {
+      //     user = new User({
+      //       google_id: profile.id,
+      //       username: profile.name.givenName,
+      //       favlist: []
+      //   })
+      //     user.save();
+      //   }
+      //   if (user) {
+      //     return done(null, user);
+      //   }
       });
-    })
   }
 ));
 
@@ -147,7 +154,6 @@ app.post('/addqueue', (req, res) => {
   res.end();
 })
 
-
 //1.
 app.post('/joinevent', (req, res) => {
   Event.findOne({eventName: req.body.eventName})
@@ -155,7 +161,6 @@ app.post('/joinevent', (req, res) => {
   .then(event => res.json(event))
   .catch(err => res.send(err))
 })
-
 
 //2.
 app.get('/history', (req, res) => {
@@ -166,7 +171,6 @@ app.get('/history', (req, res) => {
 
 //3.
 //when url(music) finishes add thtat to that event's histiry
-
 
 
 // app.post('/queue', (req, res) => {

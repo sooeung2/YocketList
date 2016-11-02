@@ -17,22 +17,25 @@ class Profile extends React.Component {
     const newEventObj = {
       google_id,
       eventName: form.eventName.value,
-      eventType: 'Pool Party',
       eventPassword: form.eventPassword.value,
     };
     console.log('Attempting to Join Event:', newEventObj);
     // this.props.powers.createEvent(newEventObj);
+    const newState = this.props.route.newState;
     $.ajax({
           url: HOST+"/joinevent",
           type:"POST",
           data: JSON.stringify(newEventObj),
           contentType:"application/json; charset=utf-8",
           dataType:"json",
-        }, (response) => {
-          console.log(response);
-        this.props.newState(response.body);
-        window.location = `/#/home/guest/${response.body.event._id}`;
-    });
+        }).always(function(response) {
+          console.log('Got a response with event data: ', response);
+          if (response['errmsg']) {
+            alert('Room not Found!');
+          } else {
+            newState(response);
+            window.location = `/account#/guest/${response._id}`;
+      }});
   }
 
   render() {
@@ -47,7 +50,7 @@ class Profile extends React.Component {
       <input type='text' name='eventName' placeholder="Event Name"></input>
       <input type='text' name='eventPassword' placeholder = "Event Password"></input>
     </form>
-    <button onClick={this.joinRoom}>Join Room</button>
+    <button onClick={this.joinRoom.bind(this)}>Join Room</button>
   <Link to="createEvent">Create New Event</Link>
   </div>
 )

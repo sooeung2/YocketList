@@ -5,20 +5,6 @@ class CreateEvent extends React.Component {
   // constructor(props) {
   //   super(props);
   // }
-  render() {
-    return (
-    <div>
-      <h1>Having a Party, eh?</h1>
-      <form name="newParty">
-        <input className='hiddenish' type='text' name='googleId' readOnly value={document.cookie['googleId']}></input>
-        Event Name: <input type='text' name='eventName' placeholder='Orangutan Jam'></input>
-        Event Password: <input type='text' name='eventPass' placeholder='CrazyApes'></input>
-      Fave Matchmaking Enabled: <input type='checkbox' name='matchMakingEnabled'></input>
-      </form>
-      <button onClick={this.handleClick}>Create</button>
-    </div>
-  )
-}
 handleClick(e) {
   // e.preventDefault();
   const form = document.forms.newParty;
@@ -33,17 +19,35 @@ handleClick(e) {
   console.log('Posting New Event:', newEventObj);
   newEventObj.matchmaking = form.matchMakingEnabled.value === 'on' ? true : false;
   // this.props.powers.createEvent(newEventObj);
+  const newState = this.props.route.newState;
   $.ajax({
         url: HOST+"/create-event",
         type:"POST",
         data: JSON.stringify(newEventObj),
         contentType:"application/json; charset=utf-8",
         dataType:"json",
-      }, (response) => {
+      }).always(function(response) {
         console.log('Got a response with createRoom data: ', response);
-        this.props.newState(response);
-      window.location = `/#/home/host/${response.event._id}`;
-    });
+        if (response['errmsg']) {
+          alert('That name already exists!');
+        } else {
+          newState(response);
+          window.location = `/account#/host/${response._id}`;
+    }});
 }
+
+render() {
+  return (
+    <div>
+      <h1>Having a Party, eh?</h1>
+      <form name="newParty">
+        Event Name: <input type='text' name='eventName' placeholder='Orangutan Jam'></input>
+        Event Password: <input type='text' name='eventPass' placeholder='CrazyApes'></input>
+        Fave Matchmaking Enabled: <input type='checkbox' name='matchMakingEnabled'></input>
+      </form>
+      <button onClick={this.handleClick.bind(this)}>Create</button>
+      </div>
+      )
+  }
 }
 export default CreateEvent;
