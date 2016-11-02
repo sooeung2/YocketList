@@ -12,8 +12,10 @@ class Profile extends React.Component {
   }
   joinRoom() {
     const form = document.forms.joinRoom;
+    const google_id = document.cookie.replace(/(?:(?:^|.*;\s*)google_id\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
     const newEventObj = {
-      google_id: document.cookie['google_id'],
+      google_id,
       eventName: form.eventName.value,
       eventType: 'Pool Party',
       eventPassword: form.eventPassword.value,
@@ -46,7 +48,7 @@ class Profile extends React.Component {
       <input type='text' name='eventPassword' placeholder = "Event Password"></input>
     </form>
     <button onClick={this.joinRoom}>Join Room</button>
-  <Link to="home/createEvent">Create New Event</Link>
+  <Link to="createEvent">Create New Event</Link>
   </div>
 )
 }

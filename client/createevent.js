@@ -22,8 +22,10 @@ class CreateEvent extends React.Component {
 handleClick(e) {
   // e.preventDefault();
   const form = document.forms.newParty;
+  const google_id = document.cookie.replace(/(?:(?:^|.*;\s*)google_id\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  console.log('cookies!', google_id);
   const newEventObj = {
-    google_id: document.cookie['google_id'],
+    google_id: google_id,
     eventName: form.eventName.value,
     eventType: 'Pool Party',
     eventPassword: form.eventPass.value,
@@ -38,6 +40,7 @@ handleClick(e) {
         contentType:"application/json; charset=utf-8",
         dataType:"json",
       }, (response) => {
+        console.log('Got a response with createRoom data: ', response);
         this.props.newState(response);
       window.location = `/#/home/host/${response.event._id}`;
     });

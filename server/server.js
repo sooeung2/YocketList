@@ -44,6 +44,7 @@ passport.use(new GoogleStrategy({
     passReqToCallback   : true
   },
   function(req, accessToken, refreshToken, profile, done) {
+		console.log('hi');
     process.nextTick(function () {
 
       User.findOneAndUpdate({ google_id: profile.id, username: profile.name.givenName }, { expire: new Date() }, { upsert: true }, function (err, user) {
@@ -95,7 +96,7 @@ app.get('/auth/google/callback', (
 
 // Future Login and Logout Logic
 
-app.get('/account', AuthenticationController.isAuthenticated, GuestController.addToList, (req, res, next) => {
+app.get('/account', AuthenticationController.isAuthenticated, (req, res, next) => {
   res.status(200).sendFile(path.join(__dirname, '../dist/index.html'));
 })
 

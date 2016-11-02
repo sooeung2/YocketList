@@ -23,8 +23,8 @@ class App extends React.Component {
   render() {
     return (
       <Router history={hashHistory}>
-        <Route path="/home" component={Home}>
-          {/* make them children of `App` */}
+        <Route path="/" component={Home}>
+          {/* make them childen of `App` */}
           <Route path="profile" component={Profile}/>
           <Route path="host/:eventId" state={this.state} component={HostApp}/>
           <Route path="guest/:eventId" state={this.state} getData={this.getData} component={GuestApp}/>
