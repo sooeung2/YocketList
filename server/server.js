@@ -17,7 +17,7 @@ const AuthenticationController = require('./controllers/AuthenticationController
 const GuestController = require('./controllers/GuestController');
 const EventController = require('./controllers/EventController');
 const HistoryController = require('./controllers/HistoryController');
-const QueueController = require('./QueueController')
+const QueueController = require('./controllers/QueueController')
 const creds = require('../app.config');
 const session = require('express-session');
 const cookieParser = require('cookie-parser')
@@ -140,6 +140,7 @@ app.get('/guestlist', (req, res) => {
 app.post('/queue/:id', (req, res) => {
   QueueController.add(req.params.id, req.body.link);
   // io.emit('newdata', {songs: req.body, history: HistoryController.list, guests: GuestController.list});
+});
 
 app.post('/queue', (req, res) => {
   // Testdata.queue.push(req.body);
@@ -200,6 +201,7 @@ app.get('/history', (req, res) => {
 
 /* Socket and Server Setup */
 io.on('connect', (socket) => {
+  socket.on('newsong', (roomID) => QueueController.nextSong(roomID));
   console.log(`User connected ${socket.id}`);
   socket.emit('connectestablished', socket.id);
 })
@@ -215,4 +217,4 @@ http.listen(3000, () => {
  *  - when a player window deletes an item from the database
  */
 
-module.export = app;
+module.exports = app;
