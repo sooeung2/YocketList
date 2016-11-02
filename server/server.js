@@ -46,25 +46,33 @@ passport.use(new GoogleStrategy({
   },
   function(req, accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-
-      User.findOneAndUpdate({ google_id: profile.id, username: profile.name.givenName }, { expire: new Date() }, { upsert: true }, function (err, user) {
-        if (err) {
-          console.log(err);
-          done();
-        }
-        if (!user) {
-          user = new User({
-            google_id: profile.id,
-            username: profile.name.givenName,
-            favlist: []
-        })
-          user.save();
-        }
-        if (user) {
-          return done(null, user);
-        }
+			const query = {google_id: profile.id};
+			const update = {google_id: profile.id, username: profile.name.givenName};
+			const options = {new: true, upsert: true};
+			console.log('hi');
+      User.findOneAndUpdate(query, update, options).then(user => {
+				console.log('Got it!');
+				done(null, user);
+			}).catch (err => {
+				console.log('Error in adding User: ', err);
+				done(err);
+			});
+			// if (err) {
+      //     console.log(err);
+      //     done();
+      //   }
+      //   if (!user) {
+      //     user = new User({
+      //       google_id: profile.id,
+      //       username: profile.name.givenName,
+      //       favlist: []
+      //   })
+      //     user.save();
+      //   }
+      //   if (user) {
+      //     return done(null, user);
+      //   }
       });
-    })
   }
 ));
 
@@ -96,7 +104,7 @@ app.get('/auth/google/callback', (
 
 // Future Login and Logout Logic
 
-app.get('/account', AuthenticationController.isAuthenticated, GuestController.addToList, (req, res, next) => {
+app.get('/account', AuthenticationController.isAuthenticated, (req, res, next) => {
   res.status(200).sendFile(path.join(__dirname, '../dist/index.html'));
 })
 
@@ -159,7 +167,6 @@ app.post('/addqueue', (req, res) => {
 //guestlist.add(_id, guestObj)
 //guestlist[_id].push
 app.post('/joinevent', EventController.joinEvent, GuestController.addToList)
-
 
 
 
