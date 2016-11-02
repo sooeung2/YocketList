@@ -18,15 +18,15 @@ class GuestApp extends React.Component {
    * We GET our initial set of data here after the first render
    * has been made.
    */
-  componentDidMount() {
-    this.socket = io.connect(HOST);
-    // Initialize Listener
-    this.socket.on('event', () => {
-      this.props.getData();
-    });
-    // redundant? Maybe just issue a newdata event on connect?
-    this.props.getData();
-  }
+  // componentDidMount() {
+  //   this.socket = io.connect(HOST);
+  //   // Initialize Listener
+  //   this.socket.on('event', () => {
+  //     this.props.getData();
+  //   });
+  //   // redundant? Maybe just issue a newdata event on connect?
+  //   this.props.getData();
+  // }
 
   formClick(link) {
       console.log('Posting NEW LINK : ', link);
@@ -48,12 +48,12 @@ class GuestApp extends React.Component {
     return (
       <div>
         <h1>Event: {this.props.params.eventId}</h1>
-        <GuestBox guests={this.state.guests}/>
+        <GuestBox guests={this.props.state.guests}/>
         <div className="SongList-Form-container">
-          <SongList songs={this.state.songs} />
+          <SongList songs={this.props.state.songs} />
           <Form key={0} formClick={this.formClick.bind(this)} />
         </div>
-        <HistoryList history={this.state.history} />
+        <HistoryList history={this.props.state.history} />
       </div>
     )
   }
