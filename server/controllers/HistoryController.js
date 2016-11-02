@@ -1,13 +1,18 @@
+const fs = require('fs');
+const path = require('path');
+
 const HistoryController = {};
-HistoryController.storage = {};
+HistoryController.storage = JSON.parse(fs.readFileSync(path.join(__dirname, '../cache/HistoryCache.json')));
 
 HistoryController.add = (roomID, songURL) => {
     if (HistoryController.storage[roomID] !== undefined) {
       HistoryController.storage[roomID].unshift(songURL);
+      fs.writeFileSync(path.join(__dirname, '../cache/EventCache.json'), JSON.stringify(HistoryController.storage, null, 2));
     }
     else {
       HistoryController.storage[roomID] = [];
       HistoryController.storage[roomID].unshift(songURL);
+      fs.writeFileSync(path.join(__dirname, '../cache/EventCache.json'), JSON.stringify(HistoryController.storage, null, 2));
     }
 };
 
@@ -18,6 +23,7 @@ HistoryController.remove = (roomID, songURL) => {
     else if (HistoryController.storage[roomID].includes(songURL)) {
       let song = songURL;
       HistoryController.storage[roomID].splice(HistoryController.storage[roomID].indexOf(songURL), 1);
+      fs.writeFileSync(path.join(__dirname, '../cache/EventCache.json'), JSON.stringify(HistoryController.storage, null, 2));
       return song;
     }
     throw new Error ('songURL not found.');
