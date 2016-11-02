@@ -98,13 +98,13 @@ app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'em
 
 app.get('/auth/google/callback', (
     	passport.authenticate( 'google', {
-    		successRedirect: '/account',
-    		failureRedirect: '/'
+    		successRedirect: '/',
+    		failureRedirect: '/login'
 })));
 
 // Future Login and Logout Logic
 
-app.get('/account', AuthenticationController.isAuthenticated, (req, res, next) => {
+app.get('/', AuthenticationController.isAuthenticated, (req, res, next) => {
   res.status(200).sendFile(path.join(__dirname, '../dist/index.html'));
 })
 
@@ -116,12 +116,12 @@ app.post('/create-event', EventController.addToList)
 
 app.get('/logout', function(req, res){
   req.logout();
-  res.redirect('/');
+  res.redirect('/login');
 });
 
 
 // Easter egg for API server <3 YOCKET LIST
-app.get('/', (req, res) => {
+app.get('/login', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../dist/login.html'));
 });
 

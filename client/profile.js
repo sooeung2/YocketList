@@ -34,7 +34,7 @@ class Profile extends React.Component {
             alert('Room not Found!');
           } else {
             newState(response);
-            window.location = `/account#/guest/${response.event._id}`;
+            window.location = `/#/guest/${response.event._id}`;
       }});
   }
 
