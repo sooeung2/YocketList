@@ -147,24 +147,10 @@ app.post('/addqueue', (req, res) => {
 })
 
 
-//1.
-app.post('/joinevent', (req, res) => {
-  Event.findOne({eventName: req.body.eventName})
-  .where('eventPassword').equals(req.body.eventPassword)
-  .then(event => res.json(event))
-  .catch(err => res.send(err))
-})
+//guestlist.add(_id, guestObj)
+//guestlist[_id].push
+app.post('/joinevent', EventController.joinEvent, GuestController.addToList)
 
-
-//2.
-app.get('/history', (req, res) => {
-  //find the event table with the event_id
-  //send the event_id.history
-  Event.findOne({_id: req.body._id})
-})
-
-//3.
-//when url(music) finishes add thtat to that event's histiry
 
 
 
