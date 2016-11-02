@@ -119,31 +119,11 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-/* Database */
-const qArray = [];
-
-/* Express Middleware */
-
-
-//keep this method --soo
-
 
 // Easter egg for API server <3 YOCKET LIST
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../dist/login.html'));
 });
-
-// getting queue to render on event(room) page
-app.get('/queue', (req, res) => {
-  res.status(200).send(Testdata.queue)
-})
-
-//getting guestlist to render on event(room) page
-app.get('/guestlist', (req, res) => {
-  res.status(200).send(Testdata.guestlist)
-})
-
-//adding new data to queue, adds to the end of the list
 
 app.post('/queue/:id', (req, res) => {
   QueueController.add(req.params.id, req.body.link);
@@ -156,40 +136,9 @@ app.post('/queue', (req, res) => {
 
 });
 
-app.post('/addqueue', (req, res) => {
-  Testdata.queue.push(req.body);
-  io.emit('newQueue', Testdata.queue);
-  res.status(200).send("");
-  res.end();
-})
 
-
-//guestlist.add(_id, guestObj)
-//guestlist[_id].push
 app.post('/joinevent', EventController.joinEvent, GuestController.addToList)
 
-
-// app.post('/queue', (req, res) => {
-//   if(req.body.method){
-//     if(req.body.method === 'delete'){
-//       console.log(`/queue :: [DELETE] removing first item from ${qArray}`);
-//       qArray.shift();
-//       console.log(`/queue :: [DELETE] result of delete ${qArray}`);
-//       io.emit('newdata', qArray.length);
-//       res.status(200).send("");
-//       return;
-//     }
-//   }
-//   if(!req.body.link){
-//     res.status(400).send("no data supplied");
-//     return;
-//   }
-//   qArray.push(req.body.link);
-//   console.log(`/queue :: [POST] results in ${qArray}`);
-//   io.emit('newdata', qArray.length);
-//   res.status(200).send("git it");
-//   res.end();
-// });
 
 /* Socket and Server Setup */
 io.on('connect', (socket) => {
