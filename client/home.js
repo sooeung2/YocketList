@@ -51,7 +51,7 @@ class Home extends React.Component {
       <div>
         <h1>YukeToob</h1>
         <ul role="nav">
-          <li><Link to="home/profile">Home</Link></li>
+          <li><Link to="profile">Home</Link></li>
         </ul>
         {this.props.children}
       </div>

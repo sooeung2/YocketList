@@ -19,16 +19,17 @@ class App extends React.Component {
       songs: ourStuff,
       guests: testData.guestList["5817dafb1da5550f5405937f"],
     };
+    this.newState = this.newState.bind(this);
   }
   render() {
     return (
       <Router history={hashHistory}>
-        <Route path="/home" component={Home}>
-          {/* make them children of `App` */}
-          <Route path="profile" component={Profile}/>
+        <Route path="/" component={Home}>
+          {/* make them childen of `App` */}
+          <Route path="profile" component={Profile} newState={this.newState}/>
           <Route path="host/:eventId" state={this.state} component={HostApp}/>
           <Route path="guest/:eventId" state={this.state} getData={this.getData} component={GuestApp}/>
-          <Route path="createevent" state={this.state} component={CreateEvent} />
+          <Route path="createevent" component={CreateEvent} state={this.state} newState={this.newState} />
         </Route>
       </Router>)
     }
