@@ -6,7 +6,7 @@ AuthenticationController.isAuthenticated = (req, res, next) => {
     console.log(res.cookie)
     return next();
   }
-  res.redirect('/');
+  res.redirect('/login');
 }
 
 module.exports = AuthenticationController;
