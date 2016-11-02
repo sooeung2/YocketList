@@ -24,13 +24,13 @@ EventController.joinEvent = (req, res, next) => {
   .where('eventPassword').equals(req.body.eventPassword)
   .then(event => req.body["event_id"] = event._id)
   .then(event => res.send(JSON.stringify({
-    event,
-    HistoryController.list[event._id],
-    QueueController.list[event._id],
-    GuestController.list[event._id]
-  }))
-  .catch(err => res.send(err))
-  next()
+    event: event,
+    history: HistoryController.storage[event._id],
+    songs: QueueController.storage[event._id],
+    guests: GuestController.storage[event._id]
+  })))
+  .catch(err => res.send(err));
+  next();
 }
 
 
