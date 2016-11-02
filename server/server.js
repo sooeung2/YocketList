@@ -134,13 +134,15 @@ app.get('/guestlist' (req, res) => {
 })
 
 //adding new data to queue, adds to the end of the list
-app.post('/queue', (req, res) => {
+app.post('/addqueue', (req, res) => {
   Testdata.queue.push(req.body);
   io.emit('newQueue', Testdata.queue);
   res.status(200).send("");
   res.end();
 })
 
+
+//1.
 app.post('/joinevent', (req, res) => {
   Event.findOne({eventName: req.body.eventName})
   .where('eventPassword').equals(req.body.eventPassword)
@@ -149,12 +151,16 @@ app.post('/joinevent', (req, res) => {
 })
 
 
-
-// find each person with a last name matching 'Ghost', selecting the `name` and `occupation` fields
-Person.findOne({ 'name.last': 'Ghost' }, 'name occupation', function (err, person) {
-  if (err) return handleError(err);
-  console.log('%s %s is a %s.', person.name.first, person.name.last, person.occupation) // Space Ghost is a talk show host.
+//2.
+app.get('/history', (req, res) => {
+  //find the event table with the event_id
+  //send the event_id.history
+  Event.findOne({_id: req.body._id})
 })
+
+//3.
+//when url(music) finishes add thtat to that event's histiry
+
 
 
 // app.post('/queue', (req, res) => {
