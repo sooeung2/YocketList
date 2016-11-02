@@ -47,13 +47,13 @@ class GuestApp extends React.Component {
   render() {
     return (
       <div>
-        <h1>Event: {this.props.params.eventId}</h1>
-        <GuestBox guests={this.props.state.guests}/>
+        <h1>Event: {this.props.route.state.event.eventName}</h1>
+        <GuestBox guests={this.props.route.state.guests}/>
         <div className="SongList-Form-container">
-          <SongList songs={this.props.state.songs} />
+          <SongList songs={this.props.route.state.songs} />
           <Form key={0} formClick={this.formClick.bind(this)} />
         </div>
-        <HistoryList history={this.props.state.history} />
+        <HistoryList history={this.props.route.state.history} />
       </div>
     )
   }
